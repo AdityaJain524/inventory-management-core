@@ -11,7 +11,8 @@
     "preview": "vite preview",
     "server": "node --watch server/index.js",
     "dev:all": "concurrently \"npm run dev\" \"npm run server\"",
-    "migrate": "node server/migrate.js"
+    "migrate": "node server/migrate.js",
+    "seed:demand": "node server/seed-demand.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
