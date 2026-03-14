@@ -162,69 +162,68 @@ export default function Products() {
             <DialogTrigger asChild>
               <Button size="sm" className="h-9"><Plus className="mr-2 h-4 w-4" /> Add Product</Button>
             </DialogTrigger>
-          <DialogContent className="max-w-lg">
-            <DialogHeader><DialogTitle>Add New Product</DialogTitle></DialogHeader>
-            <div className="grid gap-4 py-4">
-              <div className="grid gap-2">
-                <Label htmlFor="p-name">Product Name</Label>
-                <Input id="p-name" placeholder="e.g., Steel Rods" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+            <DialogContent className="max-w-lg">
+              <DialogHeader><DialogTitle>Add New Product</DialogTitle></DialogHeader>
+              <div className="grid gap-4 py-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="p-name">Product Name</Label>
+                  <Input id="p-name" placeholder="e.g., Steel Rods" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="p-sku">SKU / Code</Label>
+                    <Input id="p-sku" placeholder="STL-001" className="font-mono" value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Category</Label>
+                    <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                      <SelectContent>
+                        {categories.map((c) => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Unit of Measure</Label>
+                    <Select value={form.uom} onValueChange={(v) => setForm({ ...form, uom: v })}>
+                      <SelectTrigger><SelectValue /></SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="kg">kg</SelectItem>
+                        <SelectItem value="pcs">pcs</SelectItem>
+                        <SelectItem value="m">meters</SelectItem>
+                        <SelectItem value="sheets">sheets</SelectItem>
+                        <SelectItem value="rolls">rolls</SelectItem>
+                        <SelectItem value="pairs">pairs</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="p-stock">Initial Stock</Label>
+                    <Input id="p-stock" type="number" placeholder="0" value={form.initial_stock} onChange={(e) => setForm({ ...form, initial_stock: e.target.value })} />
+                  </div>
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>Location</Label>
+                    <Select value={form.location_id} onValueChange={(v) => setForm({ ...form, location_id: v })}>
+                      <SelectTrigger><SelectValue placeholder="Select location" /></SelectTrigger>
+                      <SelectContent>
+                        {locations.map((l) => <SelectItem key={l.id} value={String(l.id)}>{l.warehouse_name} / {l.name}</SelectItem>)}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>Reorder Point</Label>
+                    <Input type="number" value={form.reorder_point} onChange={(e) => setForm({ ...form, reorder_point: e.target.value })} />
+                  </div>
+                </div>
+                <Button className="mt-2" onClick={createProduct}>Create Product</Button>
               </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="p-sku">SKU / Code</Label>
-                  <Input id="p-sku" placeholder="STL-001" className="font-mono" value={form.sku} onChange={(e) => setForm({ ...form, sku: e.target.value })} />
-                </div>
-                <div className="grid gap-2">
-                  <Label>Category</Label>
-                  <Select value={form.category_id} onValueChange={(v) => setForm({ ...form, category_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
-                    <SelectContent>
-                      {categories.map((c) => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label>Unit of Measure</Label>
-                  <Select value={form.uom} onValueChange={(v) => setForm({ ...form, uom: v })}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="kg">kg</SelectItem>
-                      <SelectItem value="pcs">pcs</SelectItem>
-                      <SelectItem value="m">meters</SelectItem>
-                      <SelectItem value="sheets">sheets</SelectItem>
-                      <SelectItem value="rolls">rolls</SelectItem>
-                      <SelectItem value="pairs">pairs</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="p-stock">Initial Stock</Label>
-                  <Input id="p-stock" type="number" placeholder="0" value={form.initial_stock} onChange={(e) => setForm({ ...form, initial_stock: e.target.value })} />
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label>Location</Label>
-                  <Select value={form.location_id} onValueChange={(v) => setForm({ ...form, location_id: v })}>
-                    <SelectTrigger><SelectValue placeholder="Select location" /></SelectTrigger>
-                    <SelectContent>
-                      {locations.map((l) => <SelectItem key={l.id} value={String(l.id)}>{l.warehouse_name} / {l.name}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
-                </div>
-                <div className="grid gap-2">
-                  <Label>Reorder Point</Label>
-                  <Input type="number" value={form.reorder_point} onChange={(e) => setForm({ ...form, reorder_point: e.target.value })} />
-                </div>
-              </div>
-              <Button className="mt-2" onClick={createProduct}>Create Product</Button>
-            </div>
-          </DialogContent>
-        </Dialog>
+            </DialogContent>
+          </Dialog>
         </div>
-      </div>
       </div>
 
       {/* Search & Filter */}

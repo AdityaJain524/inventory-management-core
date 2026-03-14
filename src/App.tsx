@@ -8,6 +8,8 @@ import AppLayout from "@/components/AppLayout";
 import Dashboard from "@/pages/Dashboard";
 import Forecasting from "@/pages/Forecasting";
 import Products from "@/pages/Products";
+import Categories from "@/pages/Categories";
+import ReorderRules from "@/pages/ReorderRules";
 import Receipts from "@/pages/Receipts";
 import Deliveries from "@/pages/Deliveries";
 import Adjustments from "@/pages/Adjustments";
@@ -61,8 +63,8 @@ const App = () => (
                     <Route path="/" element={<Dashboard />} />
                     <Route path="/forecasting" element={<Forecasting />} />
                     <Route path="/products" element={<Products />} />
-                    <Route path="/products/categories" element={<Products />} />
-                    <Route path="/products/reorder-rules" element={<Products />} />
+                    <Route path="/products/categories" element={<Categories />} />
+                    <Route path="/products/reorder-rules" element={<ReorderRules />} />
                     <Route path="/operations/receipts" element={<Receipts />} />
                     <Route path="/operations/deliveries" element={<Deliveries />} />
                     <Route path="/operations/transfers" element={<Transfers />} />

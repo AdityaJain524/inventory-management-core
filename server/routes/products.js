@@ -165,6 +165,17 @@ router.post('/categories', async (req, res) => {
   }
 });
 
+router.delete('/categories/:id', async (req, res) => {
+  try {
+    await pool.query('DELETE FROM categories WHERE id = $1', [req.params.id]);
+    res.json({ message: 'Category deleted' });
+  } catch (err) {
+    if (err.code === '23503') return res.status(409).json({ error: 'Cannot delete category: It is used by products' });
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 // --- Reorder rules ---
 router.get('/reorder-rules', async (req, res) => {
   try {
