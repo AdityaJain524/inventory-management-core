@@ -3,6 +3,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import pool from '../db.js';
 import authMiddleware from '../middleware/auth.js';
+import { sendOTP } from '../utils/email.js';
 
 const router = Router();
 
@@ -53,7 +54,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
-// Forgot password – generate OTP
+// Forgot password – generate OTP and send email
 router.post('/forgot-password', async (req, res) => {
   try {
     const { email } = req.body;
@@ -64,8 +65,10 @@ router.post('/forgot-password', async (req, res) => {
     const expires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
     await pool.query('UPDATE users SET otp_code = $1, otp_expires = $2 WHERE email = $3', [otp, expires, email]);
 
-    // In production, send OTP via email. For demo, return it in response.
-    res.json({ message: 'OTP sent', otp_demo: otp });
+    const sent = await sendOTP(email, otp);
+    if (!sent) return res.status(500).json({ error: 'Failed to send OTP email' });
+
+    res.json({ message: 'OTP sent to your email' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });

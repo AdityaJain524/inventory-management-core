@@ -15,6 +15,7 @@ import dashboardRoutes from './routes/dashboard.js';
 import warehouseRoutes from './routes/warehouses.js';
 import moveRoutes from './routes/moves.js';
 import profileRoutes from './routes/profile.js';
+import forecastRoutes from './routes/forecasts.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -35,6 +36,7 @@ app.use('/api/dashboard', authMiddleware, dashboardRoutes);
 app.use('/api/warehouses', authMiddleware, warehouseRoutes);
 app.use('/api/moves', authMiddleware, moveRoutes);
 app.use('/api/profile', authMiddleware, profileRoutes);
+app.use('/api/forecasts', authMiddleware, forecastRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {

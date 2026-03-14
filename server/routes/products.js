@@ -101,6 +101,46 @@ router.delete('/:id', async (req, res) => {
   }
 });
 
+// Bulk upload products
+router.post('/bulk', async (req, res) => {
+  const client = await pool.connect();
+  try {
+    const products = req.body;
+    if (!Array.isArray(products)) return res.status(400).json({ error: 'Expected array of products' });
+
+    await client.query('BEGIN');
+    const results = [];
+
+    for (const p of products) {
+      const { name, sku, category_id, uom, reorder_point, reorder_qty } = p;
+      if (!name || !sku) continue;
+
+      const res = await client.query(
+        `INSERT INTO products (name, sku, category_id, uom, reorder_point, reorder_qty)
+         VALUES ($1, $2, $3, $4, $5, $6)
+         ON CONFLICT (sku) DO UPDATE SET
+           name = EXCLUDED.name,
+           category_id = COALESCE(EXCLUDED.category_id, products.category_id),
+           uom = COALESCE(EXCLUDED.uom, products.uom),
+           reorder_point = COALESCE(EXCLUDED.reorder_point, products.reorder_point),
+           reorder_qty = COALESCE(EXCLUDED.reorder_qty, products.reorder_qty)
+         RETURNING *`,
+        [name, sku, category_id || null, uom || 'pcs', reorder_point || 0, reorder_qty || 0]
+      );
+      results.push(res.rows[0]);
+    }
+
+    await client.query('COMMIT');
+    res.json({ message: `Processed ${results.length} products`, products: results });
+  } catch (err) {
+    await client.query('ROLLBACK');
+    console.error(err);
+    res.status(500).json({ error: 'Failed to process bulk upload' });
+  } finally {
+    client.release();
+  }
+});
+
 // --- Categories ---
 router.get('/categories', async (req, res) => {
   try {

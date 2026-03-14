@@ -6,6 +6,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import AppLayout from "@/components/AppLayout";
 import Dashboard from "@/pages/Dashboard";
+import Forecasting from "@/pages/Forecasting";
 import Products from "@/pages/Products";
 import Receipts from "@/pages/Receipts";
 import Deliveries from "@/pages/Deliveries";
@@ -58,6 +59,7 @@ const App = () => (
                 <AppLayout>
                   <Routes>
                     <Route path="/" element={<Dashboard />} />
+                    <Route path="/forecasting" element={<Forecasting />} />
                     <Route path="/products" element={<Products />} />
                     <Route path="/products/categories" element={<Products />} />
                     <Route path="/products/reorder-rules" element={<Products />} />

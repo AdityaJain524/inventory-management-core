@@ -1,8 +1,10 @@
 import { useState, useEffect } from "react";
-import { Loader2 } from "lucide-react";
+import { Loader2, Download } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Button } from "@/components/ui/button";
 import { api } from "@/lib/api";
+import { exportToCSV } from "@/lib/utils";
 
 interface StockMove {
   id: number; move_type: string; reference_code: string; product_name: string;
@@ -38,6 +40,9 @@ export default function MoveHistory() {
           <h1 className="text-2xl font-bold">Move History</h1>
           <p className="text-sm text-muted-foreground">Complete stock movement ledger</p>
         </div>
+        <Button variant="outline" size="sm" onClick={() => exportToCSV(moves, "MoveHistory")} className="h-9 px-3">
+          <Download className="mr-2 h-4 w-4" /> Export CSV
+        </Button>
       </div>
 
       <div className="mb-4">

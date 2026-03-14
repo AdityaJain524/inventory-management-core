@@ -2,13 +2,14 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import {
-  LayoutDashboard, Package, ClipboardList, ArrowDownToLine, Truck,
+  LayoutDashboard, BrainCircuit, Package, ClipboardList, ArrowDownToLine, Truck,
   SlidersHorizontal, History, Settings, User, LogOut, ChevronDown,
   ChevronRight, Warehouse, Menu, ArrowLeftRight,
 } from "lucide-react";
 
 const navItems = [
   { label: "Dashboard", icon: LayoutDashboard, path: "/" },
+  { label: "AI Forecasting", icon: BrainCircuit, path: "/forecasting" },
   {
     label: "Products",
     icon: Package,

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Plus, Search, Loader2, Trash2, Pencil } from "lucide-react";
+import { Plus, Search, Loader2, Trash2, Pencil, Download, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent } from "@/components/ui/card";
@@ -12,6 +12,8 @@ import {
 } from "@/components/ui/select";
 import { api } from "@/lib/api";
 import { useToast } from "@/hooks/use-toast";
+import { exportToCSV } from "@/lib/utils";
+import Papa from "papaparse";
 
 interface Product {
   id: number;
@@ -100,6 +102,28 @@ export default function Products() {
     }
   };
 
+  const handleBulkUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async (results) => {
+        try {
+          setLoading(true);
+          await api.post("/products/bulk", results.data);
+          toast({ title: "Bulk upload successful", description: `Processed ${results.data.length} products.` });
+          fetchData();
+        } catch (err: any) {
+          toast({ title: "Import Failed", description: err.message, variant: "destructive" });
+        } finally {
+          setLoading(false);
+        }
+      },
+    });
+  };
+
   const getStockBadge = (stock: number, reorderPoint: number) => {
     if (stock === 0) return <span className="status-badge status-canceled">Out of Stock</span>;
     if (reorderPoint > 0 && stock <= reorderPoint) return <span className="status-badge status-waiting">Low Stock</span>;
@@ -119,10 +143,25 @@ export default function Products() {
           <h1 className="text-2xl font-bold">Products</h1>
           <p className="text-sm text-muted-foreground">{products.length} products registered</p>
         </div>
-        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-          <DialogTrigger asChild>
-            <Button><Plus className="mr-2 h-4 w-4" /> Add Product</Button>
-          </DialogTrigger>
+        <div className="flex gap-2">
+          <Button variant="outline" size="sm" onClick={() => exportToCSV(products, "Products")} className="h-9 px-3">
+            <Download className="mr-2 h-4 w-4" /> Export
+          </Button>
+          <div className="relative">
+            <input
+              type="file"
+              accept=".csv"
+              onChange={handleBulkUpload}
+              className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+            />
+            <Button variant="outline" size="sm" className="h-9 px-3">
+              <Upload className="mr-2 h-4 w-4" /> Bulk Import
+            </Button>
+          </div>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+            <DialogTrigger asChild>
+              <Button size="sm" className="h-9"><Plus className="mr-2 h-4 w-4" /> Add Product</Button>
+            </DialogTrigger>
           <DialogContent className="max-w-lg">
             <DialogHeader><DialogTitle>Add New Product</DialogTitle></DialogHeader>
             <div className="grid gap-4 py-4">
