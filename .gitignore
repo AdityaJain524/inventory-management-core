@@ -30,3 +30,4 @@ dist-ssr
 .gemini/
 
 # removing video_instructions.md file 
+video_instructions.md
