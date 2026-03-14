@@ -77,18 +77,16 @@ router.put('/:id/validate', async (req, res) => {
 
     for (const line of lines.rows) {
       if (!line.location_id) continue;
-      // Check stock is sufficient
-      const stockResult = await client.query('SELECT quantity FROM stock WHERE product_id = $1 AND location_id = $2', [line.product_id, line.location_id]);
-      const currentQty = stockResult.rows.length > 0 ? parseFloat(stockResult.rows[0].quantity) : 0;
-      if (currentQty < parseFloat(line.quantity)) {
-        await client.query('ROLLBACK');
-        return res.status(400).json({ error: `Insufficient stock for ${line.product_name}. Available: ${currentQty}, Requested: ${line.quantity}` });
-      }
-      // Decrease stock
+      
+      // Decrease stock (allow negative)
       await client.query(
-        'UPDATE stock SET quantity = quantity - $1 WHERE product_id = $2 AND location_id = $3',
-        [line.quantity, line.product_id, line.location_id]
+        `INSERT INTO stock (product_id, location_id, quantity) 
+         VALUES ($1, $2, $3)
+         ON CONFLICT (product_id, location_id) 
+         DO UPDATE SET quantity = stock.quantity + $3`,
+        [line.product_id, line.location_id, -parseFloat(line.quantity)]
       );
+
       // Log stock move
       await client.query(
         'INSERT INTO stock_moves (move_type, reference_id, reference_code, product_id, from_location, to_location, quantity, created_at) VALUES ($1,$2,$3,$4,$5,$6,$7,NOW())',
