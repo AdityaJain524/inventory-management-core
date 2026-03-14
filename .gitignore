@@ -28,3 +28,5 @@ dist-ssr
 
 # Agent workspace
 .gemini/
+
+# removing video_instructions.md file 

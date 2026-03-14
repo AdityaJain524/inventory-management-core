@@ -227,7 +227,7 @@ export default function Products() {
       </div>
 
       {/* Search & Filter */}
-      <div className="mb-4 flex flex-wrap gap-3">
+      <div className="mb-4 flex flex-wrap gap-3 items-center">
         <div className="relative max-w-sm flex-1">
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
           <Input placeholder="Search by name or SKU..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9" />
@@ -239,6 +239,39 @@ export default function Products() {
             {categories.map((c) => <SelectItem key={c.id} value={String(c.id)}>{c.name}</SelectItem>)}
           </SelectContent>
         </Select>
+
+        <Dialog>
+          <DialogTrigger asChild>
+            <Button variant="outline" size="sm" className="h-10">Manage Categories</Button>
+          </DialogTrigger>
+          <DialogContent>
+            <DialogHeader><DialogTitle>Product Categories</DialogTitle></DialogHeader>
+            <div className="space-y-4 pt-4">
+              <div className="flex gap-2">
+                <Input 
+                  placeholder="New category name..." 
+                  value={newCat} 
+                  onChange={(e) => setNewCat(e.target.value)} 
+                />
+                <Button onClick={addCategory}>Add</Button>
+              </div>
+              <div className="max-h-60 overflow-y-auto border rounded-md">
+                <table className="w-full text-sm text-left">
+                  <thead className="bg-muted">
+                    <tr><th className="px-3 py-2">Name</th></tr>
+                  </thead>
+                  <tbody>
+                    {categories.map(c => (
+                      <tr key={c.id} className="border-t">
+                        <td className="px-3 py-2">{c.name}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       {/* Table */}
