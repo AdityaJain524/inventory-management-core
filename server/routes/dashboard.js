@@ -11,7 +11,7 @@ router.get('/kpis', async (req, res) => {
     const lowStock = await pool.query(`
       SELECT COUNT(DISTINCT p.id) as count FROM products p
       LEFT JOIN (SELECT product_id, SUM(quantity) as total FROM stock GROUP BY product_id) s ON s.product_id = p.id
-      WHERE COALESCE(s.total, 0) <= p.reorder_point AND p.reorder_point > 0
+      WHERE COALESCE(s.total, 0) > 0 AND COALESCE(s.total, 0) <= p.reorder_point AND p.reorder_point > 0
     `);
 
     const outOfStock = await pool.query(`
@@ -20,9 +20,9 @@ router.get('/kpis', async (req, res) => {
       WHERE COALESCE(s.total, 0) = 0
     `);
 
-    const pendingReceipts = await pool.query("SELECT COUNT(*) as count FROM receipts WHERE status IN ('Draft','Waiting','Ready')");
-    const pendingDeliveries = await pool.query("SELECT COUNT(*) as count FROM deliveries WHERE status IN ('Draft','Waiting','Ready')");
-    const pendingTransfers = await pool.query("SELECT COUNT(*) as count FROM transfers WHERE status IN ('Draft','Waiting','Ready')");
+    const pendingReceipts = await pool.query("SELECT COUNT(*) as count FROM receipts WHERE status NOT IN ('Done', 'Validated', 'Canceled')");
+    const pendingDeliveries = await pool.query("SELECT COUNT(*) as count FROM deliveries WHERE status NOT IN ('Done', 'Validated', 'Canceled')");
+    const pendingTransfers = await pool.query("SELECT COUNT(*) as count FROM transfers WHERE status NOT IN ('Done', 'Validated', 'Canceled')");
 
     res.json({
       total_products: parseInt(totalProducts.rows[0].count),
@@ -102,7 +102,8 @@ router.get('/low-stock', async (req, res) => {
       FROM products p
       LEFT JOIN categories c ON c.id = p.category_id
       LEFT JOIN (SELECT product_id, SUM(quantity) as total FROM stock GROUP BY product_id) s ON s.product_id = p.id
-      WHERE COALESCE(s.total, 0) <= p.reorder_point AND p.reorder_point > 0
+      WHERE (COALESCE(s.total, 0) <= p.reorder_point AND p.reorder_point > 0)
+         OR (COALESCE(s.total, 0) = 0)
       ORDER BY COALESCE(s.total, 0) ASC
     `);
     res.json(result.rows);

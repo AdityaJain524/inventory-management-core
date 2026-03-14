@@ -83,7 +83,7 @@ export default function Dashboard() {
 
   const chartData = kpis ? [
     { name: "Products", value: kpis.total_products, fill: "hsl(199, 89%, 48%)" },
-    { name: "Low Stock", value: kpis.low_stock, fill: "hsl(38, 92%, 50%)" },
+    { name: "Low Stock", value: kpis.low_stock + kpis.out_of_stock, fill: "hsl(38, 92%, 50%)" },
     { name: "Receipts", value: kpis.pending_receipts, fill: "hsl(160, 84%, 39%)" },
     { name: "Deliveries", value: kpis.pending_deliveries, fill: "hsl(168, 76%, 42%)" },
     { name: "Transfers", value: kpis.pending_transfers, fill: "hsl(215, 28%, 50%)" },
