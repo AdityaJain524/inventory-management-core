@@ -224,6 +224,7 @@ export default function Products() {
           </DialogContent>
         </Dialog>
       </div>
+      </div>
 
       {/* Search & Filter */}
       <div className="mb-4 flex flex-wrap gap-3">
